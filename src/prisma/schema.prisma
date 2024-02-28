@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  id                                   Int        @id @default(autoincrement())
+  category                             String     @unique(map: "category") @db.VarChar(255)
+  created_at                           DateTime?  @db.DateTime(0)
+  updated_at                           DateTime?  @db.DateTime(0)
+  products_products_categoryTocategory products[] @relation("products_categoryTocategory")
+}
+
+model products {
+  id                                   Int       @id @default(autoincrement())
+  name                                 String    @unique(map: "name") @db.VarChar(255)
+  description                          String?   @db.Text
+  imagelink_square                     String    @db.VarChar(255)
+  prices                               Float     @db.Float
+  price_for                            String?   @db.VarChar(255)
+  average_rating                       Float?    @db.Float
+  ratings_count                        Int?
+  category                             Int
+  category_name                        String?   @db.VarChar(255)
+  quantity                             Int
+  points                               Int?
+  manufacture_date                     DateTime  @db.DateTime(0)
+  discount                             Float?    @db.Float
+  expiry_date                          DateTime  @db.DateTime(0)
+  hide                                 Boolean?
+  is_deleted                           Boolean?
+  created_at                           DateTime? @db.DateTime(0)
+  updated_at                           DateTime? @db.DateTime(0)
+  category_products_categoryTocategory category  @relation("products_categoryTocategory", fields: [category], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "products_ibfk_1")
+  likedUsers                           users[]   @relation("likedUsers")
+  cartUsers                            users[]   @relation("cartUsers")
+
+  @@index([category], map: "category")
+}
+
+model users {
+  id            Int        @id @default(autoincrement())
+  first_name    String?    @db.VarChar(255)
+  last_name     String?    @db.VarChar(255)
+  email_id      String     @unique(map: "email_id") @db.VarChar(255)
+  phone_number  String     @unique(map: "phone_number") @db.VarChar(255)
+  password      String     @db.Text
+  is_active     Boolean
+  role          String     @db.VarChar(255)
+  imageLink     String?    @db.Text
+  likedProducts products[] @relation("likedUsers")
+  cartProducts  products[] @relation("cartUsers")
+  created_at    DateTime?  @db.DateTime(0)
+  updated_at    DateTime?  @db.DateTime(0)
+}
